@@ -1,26 +1,39 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./style/style.scss";
+import axios from "axios";
 
-function App() {
+const App = () => {
+  const [quote, setQuote] = useState<string>("");
+  const [author, setAuthor] = useState<string>("");
+
+  const getQuotesFromApi = async () => {
+    try {
+      const allQuotes = await axios.get("https://api.quotable.io/random");
+      setQuote(allQuotes.data.content);
+      setAuthor(allQuotes.data.author);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getQuotesFromApi();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <div className="content__wrapper">
+        <div className="quote_wrapper">
+          <p className="quote__content">'{quote}'</p>
+          <p className="quote__author">{author}</p>
+        </div>
+        <div className="quote__button" onClick={getQuotesFromApi}>
+          {" "}
+          New quote
+        </div>
+      </div>
     </div>
   );
-}
+};
 
 export default App;
